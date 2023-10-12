@@ -1,95 +1,50 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import styles from "./page.module.scss";
+import Table from "./components/Table/Table";
+import { useQuery } from "react-query";
+import { useState } from "react";
+import { useCoinsContext } from "./providers/CoinsContextProvider";
+import Loader from "./ui/Loader/Loader";
+
+const fetchCoins = (skip: number, value: any) => {
+    return fetch(
+        `https://api.coincap.io/v2/assets?limit=${10}&offset=${skip}&search=${value}`
+    ).then((res) => {
+        const result = res.json();
+
+        return result;
+    });
+};
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    const { setCoinsData, page, setPage, coinsData, filterValue }: any =
+        useCoinsContext();
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+    const { data, isLoading, isSuccess, isError } = useQuery(
+        ["coins", page, filterValue],
+        () => fetchCoins(page, filterValue),
+        {
+            keepPreviousData: true,
+        }
+    );
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+    if (isLoading) {
+        return <Loader></Loader>;
+    }
+    if (isError) {
+        console.log("error");
+    }
+    if (isSuccess) {
+        setCoinsData(data.data);
+    }
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    return (
+        <main className={styles.main}>
+            {isSuccess && (
+                <>
+                    <Table isSuccess={isSuccess} />
+                </>
+            )}
+        </main>
+    );
 }
