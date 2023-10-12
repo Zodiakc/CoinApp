@@ -1,18 +1,26 @@
 import React from "react";
 import styles from "./Counter.module.scss";
+
 const Counter = ({ num, setNum, price }: any) => {
+    const increment = () => {
+        if (num < 0) {
+            return;
+        }
+        setNum(num + 1);
+    };
+
+    const decrement = () => {
+        if (num === 1) {
+            return;
+        }
+        setNum(num - 1);
+    };
+
     return (
         <div>
-            <button onClick={() => setNum(num - 1)}>-</button>
+            <button onClick={decrement}>-</button>
             <span>{num}</span>
-            <button
-                onClick={() => {
-                    setNum(num + 1);
-                    console.log(price, num);
-                }}
-            >
-                +
-            </button>
+            <button onClick={increment}>+</button>
         </div>
     );
 };

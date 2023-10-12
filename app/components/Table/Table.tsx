@@ -7,6 +7,7 @@ import Input from "@/app/ui/Input/Input";
 import Link from "next/link";
 import Modal from "@/app/ui/Modal/Modal";
 import { useProfileContext } from "@/app/providers/ProfileContext";
+import DropDown from "@/app/ui/DropDown/DropDown";
 
 const Table: React.FC<any> = ({ isSuccess }) => {
     const { coinsData, page, setPage, setCoinsData, setFilterValue }: any =
@@ -32,9 +33,7 @@ const Table: React.FC<any> = ({ isSuccess }) => {
     return (
         <>
             <Input childFunc={handleChangeValue} />
-            <ul>
-                <li>Dropdown</li>
-            </ul>
+            <DropDown />
             <table className={styles.table}>
                 <thead>
                     <tr>
@@ -57,13 +56,14 @@ const Table: React.FC<any> = ({ isSuccess }) => {
                                       <td>{item.symbol}</td>
                                       <td>{item.name}</td>
                                       <td>
-                                          {Number(item.priceUsd).toLocaleString(
-                                              "en-us",
-                                              {
-                                                  style: "currency",
-                                                  currency: "USD",
-                                              }
-                                          )}
+                                          {item.priceUsd >= 0.001
+                                              ? Number(
+                                                    item.priceUsd
+                                                ).toLocaleString("en-us", {
+                                                    style: "currency",
+                                                    currency: "USD",
+                                                })
+                                              : "$0.01"}
                                       </td>
                                       <td>
                                           {Number(

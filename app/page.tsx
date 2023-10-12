@@ -6,23 +6,37 @@ import { useState } from "react";
 import { useCoinsContext } from "./providers/CoinsContextProvider";
 import Loader from "./ui/Loader/Loader";
 
-const fetchCoins = (skip: number, value: any) => {
+const fetchCoins = (skip: number, value: any, sort: string) => {
     return fetch(
         `https://api.coincap.io/v2/assets?limit=${10}&offset=${skip}&search=${value}`
-    ).then((res) => {
-        const result = res.json();
+    )
+        .then((res) => {
+            const result = res.json();
 
-        return result;
-    });
+            return result;
+        })
+        .then((res) => {
+            const sortedData = res.data.sort((a: any, b: any) => {
+                return b[sort] - a[sort];
+            });
+
+            return sortedData;
+        });
 };
 
 export default function Home() {
-    const { setCoinsData, page, setPage, coinsData, filterValue }: any =
-        useCoinsContext();
+    const {
+        setCoinsData,
+        page,
+        setPage,
+        coinsData,
+        filterValue,
+        sortData,
+    }: any = useCoinsContext();
 
     const { data, isLoading, isSuccess, isError } = useQuery(
-        ["coins", page, filterValue],
-        () => fetchCoins(page, filterValue),
+        ["coins", page, filterValue, sortData],
+        () => fetchCoins(page, filterValue, sortData),
         {
             keepPreviousData: true,
         }
@@ -35,7 +49,7 @@ export default function Home() {
         console.log("error");
     }
     if (isSuccess) {
-        setCoinsData(data.data);
+        setCoinsData(data);
     }
 
     return (
@@ -43,6 +57,9 @@ export default function Home() {
             {isSuccess && (
                 <>
                     <Table isSuccess={isSuccess} />
+                    <button onClick={() => console.log(coinsData)}>
+                        Click
+                    </button>
                 </>
             )}
         </main>

@@ -10,7 +10,9 @@ export default function ProfileContextProvider({
 }) {
     const [modalState, setModalState] = useState(false);
     const [modalInfo, setModalInfo] = useState({});
-
+    const [profileInfo, setProfileInfo] = useState([
+        { name: "", coinPrice: 0 },
+    ]);
     return (
         <ProfileContext.Provider
             value={{
@@ -18,6 +20,8 @@ export default function ProfileContextProvider({
                 setModalState,
                 modalInfo,
                 setModalInfo,
+                profileInfo,
+                setProfileInfo,
             }}
         >
             {children}

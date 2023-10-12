@@ -1,22 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Modal.module.scss";
 import { useProfileContext } from "@/app/providers/ProfileContext";
+import Button from "../Button/Button";
 import Counter from "../Counter/Counter";
 const Modal = ({ isClicked }: any) => {
-    const { modalInfo } = useProfileContext();
+    const { modalInfo, profileInfo, setProfileInfo }: any = useProfileContext();
+
     const [counterState, setCounterState] = useState(1);
+    const filteredModalInfoPrice =
+        modalInfo.price &&
+        Number(modalInfo.price.substring(1).replace(",", ""));
+    const sumOfCoins = modalInfo.price
+        ? (filteredModalInfoPrice * counterState).toFixed(2)
+        : 0;
+    useEffect(() => {
+        if (!isClicked) {
+            setCounterState(1);
+        }
+    }, [isClicked]);
+
+    const handleProfileInfo = () => {
+        const sameObj = profileInfo.find(
+            (item: any) => item.name === modalInfo.name
+        );
+        if (sameObj) {
+            sameObj.coinPrice += filteredModalInfoPrice * counterState;
+            setProfileInfo([...profileInfo]);
+        } else
+            setProfileInfo([
+                ...profileInfo,
+                {
+                    name: modalInfo.name,
+                    coinPrice: filteredModalInfoPrice * counterState,
+                },
+            ]);
+        console.log(profileInfo);
+    };
     return (
         <div
             className={styles.modal}
             style={isClicked ? { display: "block" } : { display: "none" }}
         >
             <h2>{modalInfo.name}</h2>
-            <span>{Number(modalInfo.price) * counterState}</span>
+            <span>{sumOfCoins}</span>
             <Counter
                 num={counterState}
                 setNum={setCounterState}
                 price={modalInfo.price}
             />
+            <Button childname="Add" childFunc={handleProfileInfo}></Button>
         </div>
     );
 };

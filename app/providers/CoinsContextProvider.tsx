@@ -12,6 +12,7 @@ export default function CoinsContextProvider({
     const [coinsData, setCoinsData] = useState([]);
     const [page, setPage] = useState(0);
     const [filterValue, setFilterValue] = useState("");
+    const [sortData, setSortData] = useState("priceUsd");
     return (
         <CoinsContext.Provider
             value={{
@@ -21,6 +22,8 @@ export default function CoinsContextProvider({
                 setPage,
                 filterValue,
                 setFilterValue,
+                sortData,
+                setSortData,
             }}
         >
             {children}
