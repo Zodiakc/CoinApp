@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import styles from "./ProfileInfo.module.scss";
 import { useProfileContext } from "@/app/providers/ProfileContext";
@@ -32,7 +33,7 @@ const ProfileInfo = () => {
         }
     );
 
-    const handledeleteCoin = (name: string) => {
+    const handledeleteCoin = (name: any) => {
         const filteredCoins = profileInfo.filter(
             (item: any, thisId: any) => item.name !== name
         );
@@ -62,9 +63,9 @@ const ProfileInfo = () => {
 
     useEffect(() => {
         const profileInfoFromStorage = JSON.parse(
-            localStorage.getItem("profileInfo")
+            localStorage.getItem("profileInfo") ?? ""
         );
-        if (profileInfoFromStorage) {
+        if (profileInfoFromStorage !== null) {
             setProfileInfo(profileInfoFromStorage);
         }
     }, []);

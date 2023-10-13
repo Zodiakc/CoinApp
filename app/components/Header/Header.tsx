@@ -7,10 +7,10 @@ const Header = () => {
     const { coinsData }: any = useCoinsContext();
 
     const [headerData, setHeaderData] = useState(
-        coinsData.filter((item, index) => index < 3)
+        coinsData.filter((item: any, index: any) => index < 3)
     );
     useEffect(() => {
-        setHeaderData(coinsData.filter((item, index) => index < 3));
+        setHeaderData(coinsData.filter((item: any, index: any) => index < 3));
     }, [coinsData]);
     return (
         <header

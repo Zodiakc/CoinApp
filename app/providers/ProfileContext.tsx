@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, useState } from "react";
 
-const ProfileContext = createContext(null);
+const ProfileContext = createContext({});
 
 export default function ProfileContextProvider({
     children,

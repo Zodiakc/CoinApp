@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, useState } from "react";
 
-export const CoinsContext = createContext(null);
+export const CoinsContext = createContext({});
 const PageContext = createContext(0);
 
 export default function CoinsContextProvider({
@@ -13,6 +13,13 @@ export default function CoinsContextProvider({
     const [page, setPage] = useState(0);
     const [filterValue, setFilterValue] = useState("");
     const [sortData, setSortData] = useState("priceUsd");
+
+    // Проверка контекста на null
+    const context = useContext(CoinsContext);
+    if (context === null) {
+        throw new Error("CoinsContext is not initialized");
+    }
+
     return (
         <CoinsContext.Provider
             value={{
@@ -33,8 +40,11 @@ export default function CoinsContextProvider({
 
 export function useCoinsContext() {
     const context = useContext(CoinsContext);
-    if (!context) {
-        console.log("error");
+
+    // Проверка контекста на null
+    if (context === null) {
+        throw new Error("CoinsContext is not initialized");
     }
+
     return context;
 }
