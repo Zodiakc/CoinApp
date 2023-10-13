@@ -39,6 +39,7 @@ export default function Home() {
         () => fetchCoins(page, filterValue, sortData),
         {
             keepPreviousData: true,
+            refetchOnWindowFocus: true,
         }
     );
 
@@ -57,9 +58,6 @@ export default function Home() {
             {isSuccess && (
                 <>
                     <Table isSuccess={isSuccess} />
-                    <button onClick={() => console.log(coinsData)}>
-                        Click
-                    </button>
                 </>
             )}
         </main>

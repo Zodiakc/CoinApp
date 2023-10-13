@@ -97,11 +97,8 @@ const MyChart = ({ id }: any) => {
         <div className={styles.chart}>
             {Object.keys(filterData).length > 0 ? (
                 <>
-                    <button onClick={() => console.log(filterData)}>
-                        dsds
-                    </button>
                     <Line data={filterData} options={options} />
-                    <div>
+                    <div className={styles.radio}>
                         <label>
                             <input
                                 type="radio"

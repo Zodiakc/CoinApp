@@ -1,4 +1,24 @@
 .chart {
     max-width: 1200px;
-    width: 100%;
+}
+.radio {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+@media (max-width: 1400px) {
+    .chart {
+        width: 800px;
+    }
+}
+@media (max-width: 910px) {
+    .chart {
+        width: 400px;
+    }
+}
+@media (max-width: 500px) {
+    .chart {
+        width: 200px;
+    }
 }

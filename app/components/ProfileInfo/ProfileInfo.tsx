@@ -5,52 +5,79 @@ import { useProfileContext } from "@/app/providers/ProfileContext";
 import Button from "@/app/ui/Button/Button";
 import { useQuery } from "react-query";
 import Loader from "@/app/ui/Loader/Loader";
+import Profile from "../../images/profile.svg";
+import Image from "next/image";
 const fetchCoins = (ids: any) => {
-    return fetch(`https://api.coincap.io/v2/assets?ids=bitcoin,ethereum`).then(
-        (res) => {
-            const result = res.json();
+    return fetch(`https://api.coincap.io/v2/assets?ids=${ids}`).then((res) => {
+        const result = res.json();
 
-            return result;
-        }
-    );
+        return result;
+    });
 };
 
 const ProfileInfo = () => {
     const { profileInfo, setProfileInfo }: any = useProfileContext();
-    let [coinsSum, setCoinsSum] = useState(0);
+    const [coinsSum, setCoinsSum] = useState(0);
     const [openProfile, setOpenProfile] = useState(false);
     const [profileData, setProfileData] = useState([]);
     const [dataCoinsSum, setDataCoinsSum] = useState(0);
-    const bit = "bitcoin";
+    const [fetchData, setFetchData] = useState("");
 
-    useEffect(() => {
-        const sumOfPrices = profileInfo.reduce(
-            (acc: number, curr: any) => acc + curr.coinPrice,
-            0
-        );
-        setCoinsSum(sumOfPrices);
-    }, [profileInfo]);
+    const { data, isLoading, isSuccess, isError } = useQuery(
+        ["coins", fetchData],
+        () => fetchCoins(fetchData),
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: true,
+        }
+    );
+
     const handledeleteCoin = (name: string) => {
         const filteredCoins = profileInfo.filter(
             (item: any, thisId: any) => item.name !== name
         );
         setProfileInfo(filteredCoins);
+        localStorage.setItem("profileInfo", JSON.stringify(filteredCoins));
     };
     useEffect(() => {
-        fetchCoins(bit)
-            .then((res) => {
-                const numArr: any = [];
-                res.data.map((item: any) => numArr.push(Number(item.priceUsd)));
-                return numArr;
-            })
-            .then((res: any) => {
-                const sumArr = res.reduce(
-                    (acc: number, curr: any) => acc + curr,
-                    0
-                );
-                setDataCoinsSum(sumArr);
-            });
+        if (isSuccess) {
+            const numArr: any = [];
+            data.data.map((item: any) => numArr.push(Number(item.priceUsd)));
+            const sumArr = numArr.reduce(
+                (acc: number, curr: any) => acc + curr,
+                0
+            );
+            setDataCoinsSum(sumArr);
+        }
+    }, [data, isSuccess]);
+    useEffect(() => {
+        if (isSuccess) {
+            const dataName = profileInfo.map((item: any) =>
+                item.name.toLowerCase()
+            );
+            dataName.shift();
+            setFetchData(dataName.join(","));
+        }
+    }, [profileInfo]);
+
+    useEffect(() => {
+        const profileInfoFromStorage = JSON.parse(
+            localStorage.getItem("profileInfo")
+        );
+        if (profileInfoFromStorage) {
+            setProfileInfo(profileInfoFromStorage);
+        }
     }, []);
+
+    useEffect(() => {
+        console.log(profileInfo);
+        const sumOfPrices = profileInfo.reduce(
+            (acc: number, curr: any) => acc + curr.coinPrice,
+            0
+        );
+
+        setCoinsSum(sumOfPrices);
+    }, [profileInfo]);
 
     return (
         <aside
@@ -58,18 +85,26 @@ const ProfileInfo = () => {
                 !openProfile ? styles.profileBlock : styles.openedProfile
             }`}
         >
-            <h2>User profile</h2>
-            <span>{coinsSum}</span>
-            <button
-                onClick={() =>
-                    console.log((coinsSum / dataCoinsSum) * 100 - 100)
-                }
-            >
-                Click
-            </button>
-            <span>{`${((coinsSum / dataCoinsSum) * 100 - 100).toFixed(
-                2
-            )}%`}</span>
+            <div className={styles.logoBlock}>
+                <Image
+                    alt="img"
+                    src={Profile}
+                    className={styles.profileImg}
+                    width={60}
+                />
+                <span>
+                    Wallet:{" "}
+                    {Number(coinsSum).toLocaleString("en-us", {
+                        style: "currency",
+                        currency: "USD",
+                    })}
+                </span>
+
+                <span>{`Income: ${(
+                    (coinsSum / dataCoinsSum) * 100 -
+                    100
+                ).toFixed(2)}%`}</span>
+            </div>
             <button
                 className={styles.arrow}
                 onClick={() => setOpenProfile(!openProfile)}
@@ -77,7 +112,7 @@ const ProfileInfo = () => {
                 ←
             </button>
             {openProfile && (
-                <div>
+                <div className={styles.openProfile}>
                     {profileInfo.map((item: any) =>
                         item.coinPrice ? (
                             <div className={styles.coinItem}>

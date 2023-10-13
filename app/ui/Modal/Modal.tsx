@@ -3,7 +3,7 @@ import styles from "./Modal.module.scss";
 import { useProfileContext } from "@/app/providers/ProfileContext";
 import Button from "../Button/Button";
 import Counter from "../Counter/Counter";
-const Modal = ({ isClicked }: any) => {
+const Modal = ({ isClicked, setClicked }: any) => {
     const { modalInfo, profileInfo, setProfileInfo }: any = useProfileContext();
 
     const [counterState, setCounterState] = useState(1);
@@ -26,30 +26,39 @@ const Modal = ({ isClicked }: any) => {
         if (sameObj) {
             sameObj.coinPrice += filteredModalInfoPrice * counterState;
             setProfileInfo([...profileInfo]);
-        } else
-            setProfileInfo([
-                ...profileInfo,
-                {
-                    name: modalInfo.name,
-                    coinPrice: filteredModalInfoPrice * counterState,
-                },
-            ]);
-        console.log(profileInfo);
+        } else {
+            profileInfo.push({
+                name: modalInfo.name,
+                coinPrice: filteredModalInfoPrice * counterState,
+            });
+            setProfileInfo([...profileInfo]);
+        }
+        localStorage.setItem("profileInfo", JSON.stringify(profileInfo));
     };
     return (
-        <div
-            className={styles.modal}
-            style={isClicked ? { display: "block" } : { display: "none" }}
-        >
-            <h2>{modalInfo.name}</h2>
-            <span>{sumOfCoins}</span>
-            <Counter
-                num={counterState}
-                setNum={setCounterState}
-                price={modalInfo.price}
-            />
-            <Button childname="Add" childFunc={handleProfileInfo}></Button>
-        </div>
+        <>
+            <div
+                className={styles.modal}
+                style={isClicked ? { display: "block" } : { display: "none" }}
+            >
+                <div className={styles.closeBlock}>
+                    <h2>{modalInfo.name}</h2>
+                    <button
+                        className={styles.closeBtn}
+                        onClick={() => setClicked(!isClicked)}
+                    >
+                        ✕
+                    </button>
+                </div>
+                <span>{sumOfCoins}</span>
+                <Counter
+                    num={counterState}
+                    setNum={setCounterState}
+                    price={modalInfo.price}
+                />
+                <Button childname="Add" childFunc={handleProfileInfo}></Button>
+            </div>
+        </>
     );
 };
 

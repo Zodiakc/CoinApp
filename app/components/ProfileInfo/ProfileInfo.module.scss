@@ -3,6 +3,7 @@
     width: 10%;
     height: 100vh;
     float: right;
+    padding: 20px;
 }
 .openedProfile {
     width: 80%;
@@ -10,4 +11,52 @@
     right: 0;
     height: 100vh;
     position: absolute;
+}
+.arrow {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background-color: rgb(206, 206, 206);
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s;
+    position: absolute;
+    z-index: 100;
+    top: 50%;
+
+    &:hover {
+        background-color: bisque;
+        transition: 0.3s;
+    }
+}
+.profileImg {
+    max-width: 60px;
+}
+.logoBlock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.openedProfile {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+.coinItem {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    align-items: center;
+    justify-content: space-around;
+    border: 1px solid black;
+}
+@media (max-width: 750px) {
+    .profileBlock {
+        width: 20%;
+    }
 }

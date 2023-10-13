@@ -2,4 +2,26 @@
 
 .header {
     background-color: c.$brightBlue;
+    display: flex;
+    padding: 20px 30px;
+    align-items: center;
+    justify-content: space-around;
+    &__item {
+        display: flex;
+
+        gap: 10px;
+    }
+}
+.text {
+    color: white;
+    font-size: 1.2rem;
+}
+@media (max-width: 750px) {
+    .text {
+        font-size: 1rem;
+    }
+    .header {
+        padding: 5px 10px;
+        flex-wrap: wrap;
+    }
 }

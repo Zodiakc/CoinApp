@@ -18,9 +18,13 @@ const Counter = ({ num, setNum, price }: any) => {
 
     return (
         <div>
-            <button onClick={decrement}>-</button>
+            <button onClick={decrement} className={styles.btn}>
+                -
+            </button>
             <span>{num}</span>
-            <button onClick={increment}>+</button>
+            <button onClick={increment} className={styles.btn}>
+                +
+            </button>
         </div>
     );
 };

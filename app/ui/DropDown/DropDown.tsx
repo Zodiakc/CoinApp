@@ -1,6 +1,6 @@
 import { useCoinsContext } from "@/app/providers/CoinsContextProvider";
 import React, { useState } from "react";
-
+import styles from "./DropDown.module.scss";
 const DropDown = () => {
     const { sortData, setSortData }: any = useCoinsContext();
 
@@ -25,7 +25,11 @@ const DropDown = () => {
     };
 
     return (
-        <select onChange={handleChange} value={sortData}>
+        <select
+            onChange={handleChange}
+            value={sortData}
+            className={styles.dropDown}
+        >
             {options.map((option) => (
                 <option key={option.value} value={option.value}>
                     {option.label}
